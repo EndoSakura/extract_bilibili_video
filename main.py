@@ -48,13 +48,15 @@ def extracVideo(partPath, outputPath):
         print(outputVideoPath + "已提取")
         return
     print(outputVideoPath)
-    subprocess.call("D:\\ffmpeg\\bin\\ffmpeg.exe " + "-i " + newVideoPath + " -i "+ newAudioPath + " -codec copy " + outputVideoPath, shell=True)
+    subprocess.call("ffmpeg " + "-i " + newVideoPath + " -i "+ newAudioPath + " -codec copy " + outputVideoPath, shell=True)
 
 rootPath = os.getcwd() + "\\resource"
 outputPath = os.getcwd() + "\\output"
 
 for videoPath in os.listdir(rootPath):
     videoPath = rootPath + "\\" + videoPath
+    if not os.path.isdir(videoPath) :
+        continue
     parts = os.listdir(videoPath)
     if len(parts) < 1 :
         continue
