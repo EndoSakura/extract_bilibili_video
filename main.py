@@ -31,9 +31,29 @@ def extracVideo(partPath, outputPath):
             type_tag =ret_dic['type_tag']
             videoTitle = ret_dic['title']
             partTitle = page_data['part']
-
-    outPutVideoName = formatTitle(partTitle) + ".mp4"
+            width = page_data['width']
+            height = page_data['height']
+            
+    formatPartTitle = formatTitle(partTitle)
+    outPutVideoName = formatPartTitle + ".mp4"
     outputVideoPath = outputPath + "\\" + outPutVideoName
+
+    #提取弹幕文件
+    if os.path.exists(partPath + "\\danmaku.xml"):
+        outAssName = outputPath + "\\" + formatPartTitle + ".ass"
+        print(outAssName)
+        if os.path.exists(outAssName):
+            print(outAssName + "已提取")
+        else:
+            import danmaku2ass #利用别人写好的danmaku2ass.py中的方法
+
+            #高分辨率下，字体大一些
+            fontSize = 23.0
+            if width >= 1920:
+                fontSize = 36.0
+
+            danmaku2ass.Danmaku2ASS(partPath + "\\danmaku.xml","Bilibili" , outAssName, width, height,\
+                reserve_blank=480,font_size=fontSize, text_opacity=1, duration_marquee=12.0, duration_still=6.0) #这些参数可调
 
     fileRealPath = partPath + "\\" + type_tag
     oldAudioPath = fileRealPath + "\\" + "audio.m4s"
@@ -50,6 +70,8 @@ def extracVideo(partPath, outputPath):
     print(outputVideoPath)
     subprocess.call("ffmpeg " + "-i " + newVideoPath + " -i "+ newAudioPath + " -codec copy " + outputVideoPath, shell=True)
 
+
+#begin
 rootPath = os.getcwd() + "\\resource"
 outputPath = os.getcwd() + "\\output"
 
@@ -68,3 +90,4 @@ for videoPath in os.listdir(rootPath):
     for partPath in parts:
         partPath = videoPath + "\\" + partPath;
         extracVideo(partPath, videoOutputPath)
+
