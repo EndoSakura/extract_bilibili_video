@@ -128,3 +128,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+resource_linux
+output_linux
